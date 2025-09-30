@@ -35,8 +35,10 @@ const loginUser = async(req, res) => {
         const { email, password } = req.body;
         const user = await User.findOne({email});
         if(!user){
-            return res.status(400).json({success: false, message: "Invalid user...mail is not registered"});
+            return res.status(400).json({success: false, message: "Invalid user...user is not shortlisted for interview"});
         }
+
+        //check entered password with db password
         const isMatch = await bcrypt.compare(password, user.password);
         if(!isMatch){
             return res.status(400).json({success: false, message: "Invalid password...check your password again"});

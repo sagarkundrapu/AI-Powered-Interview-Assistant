@@ -1,5 +1,6 @@
 const express = require ("express")
 const dotenv = require ("dotenv")
+const cors = require("cors"); 
 const connectToDB = require("./config/dbConfig.js")
 const authRoutes =require("./routes/authRoute.js")
 const homeRoutes =require("./routes/homeRoutes.js")
@@ -9,6 +10,11 @@ const app = express()
 dotenv.config()
 
 const PORT = process.env.PORT || 3000
+
+app.use(cors({
+  origin: "*"
+}));
+
 
 //database connection
 connectToDB()
