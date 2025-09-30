@@ -1,7 +1,9 @@
 const mammoth = require("mammoth");
 const path = require("path");
 const fs = require("fs");
+const pdfParse = require("pdf-parse");
 
+//success
 const uploadResume = async(req, res) => {
   const { userId, username, role, interviewTaken } = req.userInfo;
 
@@ -21,6 +23,7 @@ const uploadResume = async(req, res) => {
   });
 }
 
+// success
 const parseResume = async (req, res) => {
   const { storedName } = req.body;
 
@@ -35,7 +38,19 @@ const parseResume = async (req, res) => {
       return res.status(404).json({ success: false, message: "File not found on server" });
     }
 
-    const result = await mammoth.extractRawText({ path: filePath });
+    const mimeType = getMimeType(filePath);
+    let rawText = "";
+
+    if (mimeType === "application/pdf") {
+      const buffer = fs.readFileSync(filePath);
+      const data = await pdfParse(buffer);
+      rawText = data.text;
+    } else if (mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+      const result = await mammoth.extractRawText({ path: filePath });
+      rawText = result.value;
+    } else {
+      return res.status(415).json({ success: false, message: "Unsupported file type" });
+    }
 
     // Optional: delete file after parsing
     fs.unlinkSync(filePath);
@@ -43,7 +58,7 @@ const parseResume = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Resume parsed successfully",
-      text: result.value
+      text: normalizeText(rawText)
     });
   } catch (err) {
     console.error("❌ Error parsing resume:", err.stack || err);
@@ -52,6 +67,19 @@ const parseResume = async (req, res) => {
       message: "Internal server error...resume could not be parsed"
     });
   }
+};
+
+// Helper to infer MIME type from extension
+function getMimeType(filePath) {
+  const ext = path.extname(filePath).toLowerCase();
+  if (ext === ".pdf") return "application/pdf";
+  if (ext === ".docx") return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+  return null;
 }
 
-module.exports = { uploadResume, parseResume }
+// Optional normalization
+function normalizeText(text) {
+  return text.replace(/\r\n|\r|\n/g, " ").replace(/\s+/g, " ").trim();
+}
+
+module.exports = { uploadResume, parseResume };

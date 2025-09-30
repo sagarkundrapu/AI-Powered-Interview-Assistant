@@ -5,6 +5,7 @@ const connectToDB = require("./config/dbConfig.js")
 const authRoutes =require("./routes/authRoute.js")
 const homeRoutes =require("./routes/homeRoutes.js")
 const interviewRoutes = require("./routes/interviewRoutes.js");
+const adminRoutes = require("./routes/adminRoutes.js")
 const authMiddleware = require("./middlewares/authMiddleware.js");
 const isAdmin = require("./middlewares/adminMiddleware.js")
 

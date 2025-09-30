@@ -1,5 +1,4 @@
 const dotenv = require("dotenv");
-const fetch = require("node-fetch");
 const User = require("../models/userModel.js")
 const Interview = require("../models/chatModel.js")
 
@@ -23,10 +22,11 @@ const headers = {
 
 
 let lastQuestion = null;
-
+//working
 const askQuestion = async function (req, res) {
     const conversation = [
-        { role: "system", content: "You are an AI interviewer. Ask one technical question related to full-stack development." }
+      { role: "system", content: "You are an AI interviewer. Ask one technical question related to full-stack development. Do not answer the question or provide feedback. Only output the question."
+    }
     ];
   try {
     const response = await fetch(URL, {
@@ -44,8 +44,10 @@ const askQuestion = async function (req, res) {
       throw new Error("Invalid response from OpenRouter");
     }
 
+    //removing unnecessary leading prompt repititions or symbols
     lastQuestion = data.choices[0].message.content;
-
+    lastQuestion = lastQuestion.replace(/^.*?(?=\*\*Question:|\n|What)/i, "").trim();
+    lastQuestion = lastQuestion.replace(/^---\s*/, "").trim();
     res.status(200).json({success: true, content: lastQuestion});
   } catch (err) {
     console.error("❌ Error generating question:", err.stack || err);
@@ -53,8 +55,10 @@ const askQuestion = async function (req, res) {
   }
 };
 
+//working
 const verifyResponse = async function (req, res) {
   const { email } = req.userInfo;
+  
   const { question, answer, timeTaken = 0 } = req.body;
 
   if (!question || !answer) {

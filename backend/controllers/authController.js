@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 
 require("dotenv").config();
 
+//success
 const registerUser = async(req, res) => {
     try{
         const { username, email, password, role } = req.body;
@@ -28,7 +29,7 @@ const registerUser = async(req, res) => {
     }
 }
 
-
+//success
 const loginUser = async(req, res) => {
     try{
         //user verification
@@ -45,7 +46,7 @@ const loginUser = async(req, res) => {
         }
 
         //generate a jwt token and send it to the user
-        const payload = { userId: user._id, username: user.username, role: user.role, interviewTaken: user.interviewTaken };
+        const payload = { userId: user._id, username: user.username, email: user.email, role: user.role, interviewTaken: user.interviewTaken };
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: `${process.env.TOKEN_EXPIRATION_IN_HRS}h` });
 
         res.status(200).json({success: true, message: "User logged in successfully", token});

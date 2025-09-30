@@ -1,5 +1,6 @@
 const User = require("../models/userModel.js")
 
+//working
 const getInterviewSummary = async (req, res) => {
   const username = req.params.username
 
@@ -26,6 +27,7 @@ const getInterviewSummary = async (req, res) => {
   }
 }
 
+//working
 const getAttendedStudentsList = async (req, res) => {
   try {
     const users = await User.find({ interviewTaken: true }).select("username");
