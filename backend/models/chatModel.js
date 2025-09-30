@@ -9,7 +9,7 @@ const responseSchema = new mongoose.Schema({
 
 const interviewSchema = new mongoose.Schema({
   responses: {
-    type: [[responseSchema]]  // 2D array: 6 arrays of responses
+    type: [responseSchema] 
   }
 }, { timestamps: true });
 
