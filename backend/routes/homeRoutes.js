@@ -1,42 +1,15 @@
-const express = require('express');
-const authMiddleware = require('../middlewares/authMiddleware.js');
-const isAdminUser = require("../middlewares/adminMiddleware.js")
-
+const express = require("express");
 const router = express.Router();
+const upload = require("../middlewares/uploadMiddleware.js"); // multer config
+const {uploadResume, parseResume} = require("../controllers/homeController.js")
 
-router.post("/",authMiddleware, (req, res) => {
-    //we have this info from the authMiddleware
-    const { username, userId, role } = req.userInfo
-    
-    res.json({
-        message: "Welcome to the user home page",
-        user: { username, userId, role }
-    })
-});
 
-router.post("/interviewpage",authMiddleware, (req, res) => {
-    //we have this info from the authMiddleware
-    const { username, userId, role, interviewTaken} = req.userInfo
-    if(interviewTaken){
-        res.end({
-            success: false,
-            message: "You have already taken the test"
-        })
-    }else{
-        res.json({
-            message: "Welcome to the interview page",
-            user: { username, userId, role, interviewTaken }
-         })
-    }
-});
+//resume upload
+router.post("/", upload.single("resume"), uploadResume);
 
-router.post("/dashboard",authMiddleware, isAdminUser, (req, res) => {
-    const { username, userId, role} = req.userInfo
-    
-    res.json({
-        message: "Welcome to the admin dashboard page",
-        user: { username, userId, role }
-    })
-});
+//resume parsing
+router.post("/parse", parseResume);
+
+
 
 module.exports = router;
