@@ -6,8 +6,8 @@ const Interview = require("../models/chatModel.js")
 dotenv.config();
 
 const API_KEY = process.env.OPENROUTER_API_KEY;
-const MODEL = "deepseek/deepseek-chat-v3.1:free";
-const URL = "https://openrouter.ai/api/v1/chat/completions";
+const MODEL = process.env.MODEL
+const URL = process.env.URL;
 
 if (!API_KEY) {
   console.error("❌ OPENROUTER_API_KEY not set in .env");
