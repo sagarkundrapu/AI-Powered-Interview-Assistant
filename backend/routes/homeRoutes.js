@@ -1,15 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const upload = require("../middlewares/uploadMiddleware.js"); // multer config
-const {uploadResume, parseResume} = require("../controllers/homeController.js")
+const uploadAndParseResume = require("../controllers/homeController.js")
 
 
-//resume upload
-router.post("/", upload.single("resume"), uploadResume);
-
-//resume parsing
-router.post("/parse", parseResume);
-
-
+//resume upload and parse
+router.post("/parse", upload.single("resume"), uploadAndParseResume);
 
 module.exports = router;
