@@ -7,7 +7,7 @@ const router = express.Router();
 router.get("/",(req,res)=>{
     const { username, userId, role, interviewTaken} = req.userInfo
     if(interviewTaken){
-        res.end({
+        res.json({
             success: false,
             message: "You have already taken the test"
         })
