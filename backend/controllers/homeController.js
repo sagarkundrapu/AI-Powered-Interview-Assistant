@@ -96,8 +96,12 @@ async function extractUserDetails (text) {
                 "phone": "Phone Number"
               }
               Do not include any extra text, explanation, or labels. 
-              If any field is missing, use "Not found". 
-              Ensure the email and phone are cleanly extracted without trailing words like "Mobile" or "Email".`
+              If any field is missing, use "Not found". As soon as you get the text, check whether it corresponds to a valid resume or not(ex:if an agreement letter or a page of random book converted to pdf etc. those cases).If not, return same fields with "Not found" values. 
+              The text should be of a resume only.
+              Ensure the email and phone are cleanly extracted without trailing words like "Mobile" or "Email".
+              Make sure you strictly respond with valid JSON object format only and nothing extra not even an extra character. Response should be fully parsable if passed as it is to JSON.parse() method.
+              Do not include any greetings, explanations, or formatting outside the JSON object. The response must begin and end with the curly braces of the JSON object.
+              `
     },
     {
       role: "user",
