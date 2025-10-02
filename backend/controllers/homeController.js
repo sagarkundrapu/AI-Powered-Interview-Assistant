@@ -85,10 +85,6 @@ const uploadAndParseResume = async(req, res) => {
 //extract user details from resume
 async function extractUserDetails (text) {
 
-  if (!text || typeof text !== "string") {
-    return res.status(400).json({ success: false, message: "Missing or invalid resume text" });
-  }
-
   const conversation = [
     {
     role: "system",
@@ -127,7 +123,7 @@ async function extractUserDetails (text) {
       userDetails = JSON.parse(raw);
     } catch (parseErr) {
       console.error("❌ Failed to parse model response:", raw);
-      return res.status(500).json({ success: false, message: "Model returned invalid JSON" });
+      return { success: false, message: "Model returned invalid JSON" }
     }
 
     return userDetails;
