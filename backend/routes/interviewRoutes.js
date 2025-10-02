@@ -13,6 +13,7 @@ router.get("/",(req,res)=>{
         })
     }else{
         res.json({
+            success: true,
             message: "Welcome to the interview page",
             user: { username, userId, role, interviewTaken }
          })
