@@ -9,10 +9,15 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    interviewScore:{
+      type: Number,
+      default: 0
+    },
     interview: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Interview',
-    }
+    },
+    
 });
 
 // Remove interview field if role is 'admin'

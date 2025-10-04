@@ -4,6 +4,6 @@ const router= express.Router()
 
 router.get("/", getAttendedStudentsList)
 
-router.get("/summary/:username", getInterviewSummary);
+router.get("/summary/:userId", getInterviewSummary);
 
 module.exports = router
