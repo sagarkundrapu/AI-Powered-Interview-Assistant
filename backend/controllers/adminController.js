@@ -35,14 +35,14 @@ const getInterviewSummary = async (req, res) => {
 //working
 const getStudentsList = async (req, res) => {
 
-  const filter = req.params.filter;       //whether to select registered users, users who have taken interview or those who haven't
+  const filter = req.params.filter || 'registered';       //whether to select registered users, users who have taken interview or those who haven't
 
   // GET http://localhost:5000/api/your-route?pageNumber=1
   const pageNumber = Math.max(1, parseInt(req.query.pageNumber) || 1);    //avoiding negative pagenumbers
   const entries = parseInt(process.env.RECORDS_PER_PAGE) || 5;
   const recordsToSkip = (pageNumber - 1) * entries;
 
-  const filterQuery = null;
+  let filterQuery = null;
 
   if (filter === 'interviewTaken') {
     filterQuery = {
