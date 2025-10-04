@@ -43,6 +43,7 @@ const getStudentsList = async (req, res) => {
   const recordsToSkip = (pageNumber - 1) * entries;
 
   let filterQuery;
+  let interviewTakenStudents;
 
   if (filter === 'interviewTaken') {
     filterQuery = {
@@ -59,13 +60,12 @@ const getStudentsList = async (req, res) => {
     filterQuery = {
       role: 'student'
     }
+    interviewTakenStudents = await User.countDocuments({interviewTaken: true});
   }
-
 
   try {
     const totalMatchedRecords = await User.countDocuments(filterQuery);
     const totalPages = Math.ceil(totalMatchedRecords / entries)
-
 
     //if no records match, totalPages will be 0, but we are forcing pageNumber ≥ 1, so gracefully handle empty results 
     if (totalMatchedRecords === 0) {
@@ -77,14 +77,13 @@ const getStudentsList = async (req, res) => {
       });
     }
 
-
     //pagination for descending order of interviewScores
     const users = await User.find(filterQuery)
       .select("_id username email interviewScore interviewTaken")
       .sort({ interviewScore: -1 })
       .skip(recordsToSkip).limit(entries);
 
-    res.status(200).json({
+    const response={
       success: true,
       totalMatchedRecords,
       totalPages,
@@ -93,8 +92,15 @@ const getStudentsList = async (req, res) => {
       hasNextPage: pageNumber < totalPages,
       hasPrevPage: pageNumber > 1,
       users
-    });
+    }
+    
+    //when else case hits: interviewTakenStudents is defined
+    if (interviewTakenStudents !== undefined) {
+      response.interviewTakenStudents = interviewTakenStudents;
+      response.interviewNotTakenStudents = totalMatchedRecords - interviewTakenStudents;
+    }
 
+    return res.status(200).json(response);
   } catch (err) {
     console.error("❌ Error fetching students:", err.stack || err);
     res.status(500).json({
