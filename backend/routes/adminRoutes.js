@@ -1,8 +1,9 @@
 const express= require("express")
-const {getAttendedStudentsList, getInterviewSummary} = require("../controllers/adminController.js")
+const {getStudentsList, getInterviewSummary} = require("../controllers/adminController.js")
 const router= express.Router()
 
-router.get("/", getAttendedStudentsList)
+// GET http://localhost:5000/api/your-route?pageNumber=1&&filter=interviewTaken||interviewNotTaken||registered
+router.get("/", getStudentsList)
 
 router.get("/summary/:userId", getInterviewSummary);
 

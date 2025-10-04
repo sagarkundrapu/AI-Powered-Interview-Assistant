@@ -5,6 +5,7 @@ require('dotenv').config()
 const getInterviewSummary = async (req, res) => {
   const userId = req.params.userId
 
+
   try {
     const user = await User.findById(userId).populate("interview");
 
@@ -19,9 +20,10 @@ const getInterviewSummary = async (req, res) => {
         email: user.email,
         role: user.role,
         interviewTaken: user.interviewTaken,
+        interviewScore: user.interviewScore,
         interview: user.interviewTaken && user.interview ? user.interview.responses : []
       },
-      
+
     });
   } catch (err) {
     console.error("❌ Error fetching summary:", err.stack || err);
@@ -31,32 +33,70 @@ const getInterviewSummary = async (req, res) => {
 
 
 //working
-const getAttendedStudentsList = async (req, res) => {
+const getStudentsList = async (req, res) => {
+
+  const filter = req.params.filter;       //whether to select registered users, users who have taken interview or those who haven't
 
   // GET http://localhost:5000/api/your-route?pageNumber=1
   const pageNumber = Math.max(1, parseInt(req.query.pageNumber) || 1);    //avoiding negative pagenumbers
   const entries = parseInt(process.env.RECORDS_PER_PAGE) || 5;
-  const recordsToSKip = (pageNumber-1)*entries;
+  const recordsToSkip = (pageNumber - 1) * entries;
+
+  const filterQuery = null;
+
+  if (filter === 'interviewTaken') {
+    filterQuery = {
+      interviewTaken: true,
+      role: 'student'
+    }
+  } else if (filter === 'interviewNotTaken') {
+    filterQuery = {
+      interviewTaken: false,
+      role: 'student'
+    }
+  } else {
+    //no filter selected, display all students
+    filterQuery = {
+      role: 'student'
+    }
+  }
+
 
   try {
-    const totalMatchedRecords = await User.countDocuments({ interviewTaken: true });
-    const totalPages= Math.ceil(totalMatchedRecords/entries)
+    const totalMatchedRecords = await User.countDocuments(filterQuery);
+    const totalPages = Math.ceil(totalMatchedRecords / entries)
+
+
+    //if no records match, totalPages will be 0, but we are forcing pageNumber ≥ 1, so gracefully handle empty results 
+    if (totalMatchedRecords === 0) {
+      return res.status(200).json({
+        success: true,
+        totalMatchedRecords: 0,
+        totalPages: 0,
+        users: []
+      });
+    }
+
 
     //pagination for descending order of interviewScores
-    const users = await User.find({ interviewTaken: true })
-    .select("username email interviewScore _id")
-    .sort({ interviewScore: -1 })
-    .skip(recordsToSKip).limit(entries); 
+    const users = await User.find(filterQuery)
+      .select("_id username email interviewScore interviewTaken")
+      .sort({ interviewScore: -1 })
+      .skip(recordsToSkip).limit(entries);
 
     res.status(200).json({
       success: true,
       totalMatchedRecords,
       totalPages,
+      currentPage: pageNumber,
+      recordsPerPage: entries,
+      hasNextPage: pageNumber < totalPages,
+      hasPrevPage: pageNumber > 1,
       users
     });
 
   } catch (err) {
-    console.error("❌ Error fetching attended students:", err.stack || err);
+    console.error("❌ Error fetching students:", err.stack || err);
     res.status(500).json({
       success: false,
       message: "Internal server error...could not fetch attended students list"
@@ -64,7 +104,7 @@ const getAttendedStudentsList = async (req, res) => {
   }
 };
 
-module.exports = {getInterviewSummary, getAttendedStudentsList}
+module.exports = { getInterviewSummary, getStudentsList }
 
 
 //learnings:
