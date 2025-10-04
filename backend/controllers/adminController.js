@@ -35,14 +35,14 @@ const getInterviewSummary = async (req, res) => {
 //working
 const getStudentsList = async (req, res) => {
 
-  const filter = req.params.filter || 'registered';       //whether to select registered users, users who have taken interview or those who haven't
+  const filter = req.query.filter || 'registered';       //whether to select registered users, users who have taken interview or those who haven't
 
   // GET http://localhost:5000/api/your-route?pageNumber=1
   const pageNumber = Math.max(1, parseInt(req.query.pageNumber) || 1);    //avoiding negative pagenumbers
   const entries = parseInt(process.env.RECORDS_PER_PAGE) || 5;
   const recordsToSkip = (pageNumber - 1) * entries;
 
-  let filterQuery = null;
+  let filterQuery;
 
   if (filter === 'interviewTaken') {
     filterQuery = {
@@ -99,7 +99,7 @@ const getStudentsList = async (req, res) => {
     console.error("❌ Error fetching students:", err.stack || err);
     res.status(500).json({
       success: false,
-      message: "Internal server error...could not fetch attended students list"
+      message: "Internal server error...could not fetch students list"
     });
   }
 };
