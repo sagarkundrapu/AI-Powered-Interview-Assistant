@@ -42,9 +42,11 @@ const LoginForm = ({ onLogin }) => {
       const isSuccess = data?.success ?? true; // assume success if backend returns 200 without explicit flag
       if (isSuccess) {
         const token = data.token;
-        setToken(token);
+        // setToken(token);                             //changes
         setRole(role);
-        onLogin?.(token, role);
+        localStorage.setItem("authToken", token);
+        localStorage.setItem("role", role);
+        // onLogin?.(role);
       } else {
         setMessage({
           type: "error",
