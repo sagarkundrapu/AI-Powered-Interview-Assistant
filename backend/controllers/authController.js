@@ -47,7 +47,7 @@ const loginUser = async(req, res) => {
         //check entered password with db password
         const isMatch = await bcrypt.compare(password, user.password);
         if(!isMatch){
-            return res.status(400).json({success: false, message: "Invalid login credentials"});
+            return res.status(401).json({success: false, message: "Invalid login credentials"});
         }
 
         //check if role matches
@@ -64,7 +64,14 @@ const loginUser = async(req, res) => {
         }
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: `${process.env.TOKEN_EXPIRATION_IN_HRS || 3}h` });
 
-        res.status(200).json({success: true, message: "User logged in successfully", token});
+        const response={
+            success:true,
+            message: "User logged in successfully",
+            token,
+            interviewTaken: user.role === "student" ? user.interviewTaken : undefined
+        }
+
+        res.status(200).json(response);
 
     }catch(e){
         console.error("Some error occured while logging in user",e);

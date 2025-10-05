@@ -25,7 +25,7 @@ let lastQuestion = null;
 //working
 const askQuestion = async function (req, res) {
     const conversation = [
-      { role: "system", content: "You are an AI interviewer. Ask one technical question related to full-stack development. Do not answer the question or provide feedback. Only output the question."
+      { role: "system", content: `You are an AI interviewer. Ask one technical question related to full-stack development. Do not answer the question or provide feedback. Only output the question.`
     }
     ];
   try {
