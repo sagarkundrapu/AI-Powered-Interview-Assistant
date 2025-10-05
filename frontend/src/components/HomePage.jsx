@@ -1,16 +1,10 @@
-import React from 'react'
-import ResumeUpload from './ResumeUpload'
-import ResumeDetails from './ResumeDetails'
 import UploadPage from './UploadPage'
-import Dashboard from './Dashboard'
+import Admin from './Admin'
 
 const HomePage = ({token,role}) => {
   return (
     <>
-    {
-      console.log("Role in HomePage:", role)
-    }
-     {role==="admin" ? <Dashboard/>
+     {role==="admin" ? <Admin token={token}/>
        : <UploadPage token={token}/>}
     </>
   )
