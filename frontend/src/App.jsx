@@ -6,7 +6,8 @@ import Rules from './components/Rules';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 const AppContent = () => {
-  const { token, role } = useAuth(); 
+  const token = localStorage.getItem("authToken");
+  const role = localStorage.getItem("role")
 
   return token ? <HomePage token={token} role={role} /> : <LoginForm onLogin={(token, role) => console.log("Logged in with role:", role)} />;
 };

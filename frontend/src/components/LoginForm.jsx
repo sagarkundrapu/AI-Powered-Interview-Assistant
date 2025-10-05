@@ -22,7 +22,6 @@ const LoginForm = ({ onLogin }) => {
     try {
       setSubmitting(true);
 
-      console.log("modda gudu 1");
 
       const baseUrl = import.meta?.env?.VITE_API_BASE_URL || "http://localhost:3000";
       const response = await fetch(`${baseUrl}/api/auth/login`, {
@@ -31,7 +30,6 @@ const LoginForm = ({ onLogin }) => {
         body: JSON.stringify({ role, email, password }),
       });
 
-      console.log("modda gudu 2");
 
       const data = await response.json().catch(() => ({}));
 
@@ -44,10 +42,11 @@ const LoginForm = ({ onLogin }) => {
       const isSuccess = data?.success ?? true; // assume success if backend returns 200 without explicit flag
       if (isSuccess) {
         const token = data.token;
-        setToken(token);
+        // setToken(token);                             //changes
         setRole(role);
-        onLogin?.(token, role);
-        console.log(token);
+        localStorage.setItem("authToken", token);
+        localStorage.setItem("role", role);
+        // onLogin?.(role);
       } else {
         setMessage({
           type: "error",
@@ -55,7 +54,6 @@ const LoginForm = ({ onLogin }) => {
         });
       }
 
-      console.log("modda gudu 3");
     } catch (err) {
       setMessage({ type: "error", text: "Network error. Please try again." });
     } finally {
@@ -98,6 +96,7 @@ const LoginForm = ({ onLogin }) => {
               onChange={(e) => setemail(e.target.value)}
               placeholder="Enter email"
               required
+              autoComplete="username"
             />
           </div>
 
@@ -113,6 +112,7 @@ const LoginForm = ({ onLogin }) => {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter password"
               required
+              autoComplete="current-password"
             />
           </div>
 
