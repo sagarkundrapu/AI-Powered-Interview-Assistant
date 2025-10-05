@@ -1,4 +1,5 @@
 import React, { use, useEffect, useState } from "react";
+import UserDetails from "./UserDetails";
 
 export default function AdminDashboard({ token }) {
   const [students, setStudents] = useState([]);
@@ -246,35 +247,11 @@ export default function AdminDashboard({ token }) {
 
         {/* --- Student Detail & Chat --- */}
         {selectedStudent && (
-          <div className="mt-8 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              Student Details
-            </h2>
-            <p className="text-gray-700 dark:text-gray-300 mb-2">
-              <strong>ID:</strong> {selectedStudent._id}
-            </p>
-            <p className="text-gray-700 dark:text-gray-300 mb-2">
-              <strong>Name:</strong> {selectedStudent.username}
-            </p>
-            <p className="text-gray-700 dark:text-gray-300 mb-2">
-              <strong>Email:</strong> {selectedStudent.email}
-            </p>
-            <p className="text-gray-700 dark:text-gray-300 mb-2">
-              <strong>Phone:</strong> {selectedStudent.phone || "N/A"}
-            </p>
-            <p className="text-gray-700 dark:text-gray-300 mb-4">
-              <strong>Score:</strong> {selectedStudent.interviewScore ?? "-"}
-            </p>
-            <div className="bg-gray-50 dark:bg-gray-700/30 rounded-lg p-4 text-sm text-gray-600 dark:text-gray-300">
-              <p>
-                🗨️ <strong>Interview Chat:</strong>
-              </p>
-              <p className="mt-2 italic text-gray-500">
-                {selectedStudent.chat || "Interview chat not available."}
-              </p>
-            </div>
-          </div>
-        )}
+          <UserDetails
+            studentId={selectedStudent._id}
+            onClose={() => setSelectedStudent(null)}
+            token={token}
+            />)}
       </div>
     </div>
   );
